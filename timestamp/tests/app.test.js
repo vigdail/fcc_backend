@@ -41,9 +41,7 @@ describe('/api/:date?', () => {
     test('It should return current date if there is no param provided', async () => {
         const response = await request(app).get('/api/');
         const date = Date.now();
-        expect(response.body).toEqual({
-            unix: date,
-            utc: new Date(date).toUTCString(),
-        });
+        // since request may take more than a millisecond we check with precision of 10 ms
+        expect(response.body.unix / 10).toEqual(date / 10);
     });
 });

@@ -14,16 +14,8 @@ app.get("/", function (req, res) {
 });
 
 app.get("/api/:date?", function (req, res) {
-    let param = req.params.date;
-    if (param === undefined) {
-        param = Date.now().toString();
-    }
-    let unix;
-    if (/^\d+$/.test(param)) {
-        unix = Number(param);
-    } else {
-        unix = Date.parse(param);
-    }
+    const date = req.params.date ?? Date.now();
+    const unix = getUnixTime(date);
     if (!isNaN(unix)) {
         const utc = new Date(unix).toUTCString();
         res.json({utc: utc, unix: unix});
@@ -31,5 +23,13 @@ app.get("/api/:date?", function (req, res) {
         res.json({error: "Invalid Date"})
     }
 });
+
+function getUnixTime(date) {
+    if (/^\d+$/.test(date)) {
+        return Number(date);
+    }
+
+    return Date.parse(date);
+}
 
 module.exports = app
